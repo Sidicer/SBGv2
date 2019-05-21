@@ -53,6 +53,7 @@ void Computer::placeShips()
 		if (canPlace(sf::Vector2i(temp_x, temp_y), temp_placed, temp_rotation) && !outOfBounds(sf::Vector2i(temp_x,temp_y), temp_placed, temp_rotation)) {
 			ships[temp_placed].set(true, temp_placed, temp_rotation, sf::Vector2i(temp_x, temp_y));
 			printf("I placed #%i ship\n", temp_placed);
+			printf("%i:%i\n\n", temp_x, temp_y);
 			temp_placed++;
 		}
 	}
@@ -62,34 +63,71 @@ bool Computer::canPlace(sf::Vector2i position, int size, int rotation)
 {
 	for (int i = 0; i < 5; i++)
 	{
-		printf("I'm checking if I can place a ship compared to %i\n", i);
+		//printf("I'm checking if I can place a ship compared to %i\n", i);
 		for (int size_1 = 0; size_1 <= getShip(i).getShipSize(); size_1++)
 		{
-			printf("I found ship`s #%i size: %i\n", i, getShip(i).getShipSize());
+			//printf("I found ship`s #%i size: %i\n", i, getShip(i).getShipSize());
 			for (int size_2 = 0; size_2 <= size; size_2++)
 			{
-				printf("I'm looping through placable ship size: %i\n", size_2);
-				if (getShip(i).getShipRotation() == 0 && rotation == 0) {
-					printf("First ships rotation is %i, second ship is 0\n", getShip(i).getShipRotation());
-					return true;
+				//printf("I'm looping through placable ship size: %i\n", size_2);
+				if (getShip(i).getShipRotation() == 0 && rotation == 0) { // 0 0
+					//printf("First ships rotation is %i, second ship is 0\n", getShip(i).getShipRotation());
+					if ((getShip(i).getShipPosition().x + size_1) == (position.x + size_2) && getShip(i).getShipPosition().y == position.y)
+					{
+						printf("I cannot place because: %i:%i intersects %i:%i\n", (getShip(i).getShipPosition().x + size_1),(position.x + size_2),getShip(i).getShipPosition().y,position.y);
+						return false;
+					}
+					else
+					{
+						printf("I can place because: %i:%i doesnt intersect %i:%i\n", (getShip(i).getShipPosition().x + size_1), (position.x + size_2), getShip(i).getShipPosition().y, position.y);
+						return true;
+					}
 
-				} else if (getShip(i).getShipRotation() == 1 && rotation == 1) {
-					printf("First ships rotation is %i, second ship is 1\n", getShip(i).getShipRotation());
-					return false;
+				} else if (getShip(i).getShipRotation() == 1 && rotation == 1) { // 1 1
+					//printf("First ships rotation is %i, second ship is 1\n", getShip(i).getShipRotation());
+					if (getShip(i).getShipPosition().x == position.x && (getShip(i).getShipPosition().y + size_1) == (position.y + size_2))
+					{
+						printf("I cannot place because: %i:%i intersects %i:%i\n", getShip(i).getShipPosition().x,position.x,(getShip(i).getShipPosition().y + size_1),(position.y + size_2));
+						return false;
+					}
+					else
+					{
+						printf("I can place because: %i:%i doesnt intersect %i:%i\n", getShip(i).getShipPosition().x, position.x, (getShip(i).getShipPosition().y + size_1), (position.y + size_2));
+						return true;
+					}
+
 				}
-				else if (getShip(i).getShipRotation() == 0 && rotation == 1) {
-					printf("First ships rotation is %i, second ship is 1\n", getShip(i).getShipRotation());
-					return false;
+				else if (getShip(i).getShipRotation() == 0 && rotation == 1) { // 0 1
+					//printf("First ships rotation is %i, second ship is 1\n", getShip(i).getShipRotation());
+					if ((getShip(i).getShipPosition().x + size_1) == position.x && getShip(i).getShipPosition().y == (position.y + size_2))
+					{
+						printf("I cannot place because: %i:%i intersects %i:%i\n", (getShip(i).getShipPosition().x + size_1),position.x,getShip(i).getShipPosition().y,(position.y + size_2));
+						return false;
+					}
+					else
+					{
+						return true;
+					}
+
 				}
-				else if (getShip(i).getShipRotation() == 1 && rotation == 0) {
-					printf("First ships rotation is %i, second ship is 0\n", getShip(i).getShipRotation());
-					return false;
+				else if (getShip(i).getShipRotation() == 1 && rotation == 0) { // 1 0
+					//printf("First ships rotation is %i, second ship is 0\n", getShip(i).getShipRotation());
+					if (getShip(i).getShipPosition().x == (position.x + size_2) && (getShip(i).getShipPosition().y + size_1) == position.y)
+					{
+						printf("I cannot place because: %i:%i intersects %i:%i\n", getShip(i).getShipPosition().x,(position.x + size_2),(getShip(i).getShipPosition().y + size_1),position.y);
+						return false;
+					}
+					else
+					{
+						return true;
+					}
+
 				}
 			}
 		}
-		printf("\n");
+
 	}
-	return true;
+
 }
 
 //bool Computer::canPlace(sf::Vector2i position, int size, int rotation)

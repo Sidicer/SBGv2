@@ -8,7 +8,7 @@ int main()
 	Player player;
 	
     // Init Window
-    sf::RenderWindow window(sf::VideoMode(1000,800), "Sidicers Battleships Game");
+    sf::RenderWindow window(sf::VideoMode(1000,800), "Sidicers Battleship Game");
 	window.setFramerateLimit(60);
 
     // Init Game
@@ -79,7 +79,7 @@ int main()
             << "View: " << mousePosView.x << " " << mousePosView.y << "\n"*/
         ss << "Mouse in Grid: " << mousePosGrid.x << " " << mousePosGrid.y << "\n"
             //<< "Player: " << player.getShip(0).getShipPosition().x << " " << player.getShip(0).getShipPosition().y << "\n"
-            << "Computer: " << computer.getShip(0).getShipPosition().x << " " << computer.getShip(0).getShipPosition().y << "\n";
+			<< "Current rotation: " << player.getShip(player.getPlacingShipId()).getShipRotation() << "\n";
         text.setString(ss.str());
 
         // Events
@@ -88,6 +88,20 @@ int main()
         {
             if(event.type == sf::Event::Closed)
                 window.close();
+
+			if (player.isCurrentlyPlacing()) {
+				if (event.type == sf::Event::MouseButtonPressed) {
+					if (event.mouseButton.button == sf::Mouse::Right) {
+						player.changePlacingShipId();
+					}
+				}
+				if (event.type == sf::Event::KeyPressed) {
+					if (event.key.code == sf::Keyboard::R) {
+						player.setShipRotation();
+					}
+				}
+			}
+				
         }
 
         // Update
@@ -178,6 +192,26 @@ int main()
 
 		}
 		
+		if (player.isCurrentlyPlacing())
+		{
+			if (mousePosGrid.x > 9 && mousePosGrid.y < 10)
+			{
+				for (int i = 0; i <= player.getShip(player.getPlacingShipId()).getShipSize(); i++) {
+					switch (player.getShip(player.getPlacingShipId()).getShipRotation()) {
+					case 0:
+						ship_part.setPosition(sf::Vector2f((mousePosGrid.x + i) * gridSizeF, mousePosGrid.y * gridSizeF));
+						
+					break;
+					case 1:
+						ship_part.setPosition(sf::Vector2f(mousePosGrid.x * gridSizeF, (mousePosGrid.y + i) * gridSizeF));
+					break;
+
+					}
+					window.draw(ship_part);
+				}
+			}
+		}
+
 		window.draw(test_collision);
 
         window.setView(window.getDefaultView());

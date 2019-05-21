@@ -6,6 +6,9 @@ class Player : public Ship {
 private:
 	Ship* ships = NULL;
 	bool currently_placing;
+	int placing_ship_id,
+		placing_rotation;
+
 public:
 	Player();
 	~Player();
@@ -14,6 +17,10 @@ public:
 
 	bool isCurrentlyPlacing();
 	void isCurrentlyPlacing(bool set);
+
+	int getPlacingShipId();
+	void changePlacingShipId();
+	void setShipRotation();
 
 	bool canPlace(sf::Vector2i position, int size, int rotation);
 	bool outOfBounds(sf::Vector2i position, int size, int rotation);

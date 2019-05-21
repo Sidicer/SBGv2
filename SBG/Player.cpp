@@ -5,7 +5,9 @@ Player::Player() {
 	// Create a Dynamic array to store our ships
 	this->ships = new Ship[5];
 
-	this->currently_placing = false;
+	this->currently_placing = true;
+	this->placing_ship_id = 0;
+	this->placing_rotation = 0;
 	
 	// Initialize those 5 ships with their correct sizes
 	for (int i = 0; i < 5; i++) {
@@ -29,6 +31,21 @@ Ship & Player::getShip(const int index) {
 bool Player::isCurrentlyPlacing() {	return this->currently_placing; }
 
 void Player::isCurrentlyPlacing(bool set) { this->currently_placing = set; }
+
+int Player::getPlacingShipId() { return this->placing_ship_id; }
+
+void Player::changePlacingShipId()
+{
+	if (this->placing_ship_id < 4) this->placing_ship_id++;
+	else this->placing_ship_id = 0;
+}
+
+void Player::setShipRotation()
+{
+	this->placing_rotation = (this->placing_rotation == 0) ? 1 : 0;
+	for (int i = 0; i < 5; i++)
+		getShip(i).setShipRotation(placing_rotation);
+}
 
 // Checks if the ship that's being placed does not intersect with an already placed ship
 bool Player::canPlace(sf::Vector2i position, int size, int rotation)

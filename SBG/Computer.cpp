@@ -24,7 +24,7 @@ void Computer::placeShips()
 		temp_y = rand() % 10;
 		temp_rotation = rand() % 2;
 
-		if (!placingCollision(sf::Vector2i(temp_x, temp_y), temp_placed, temp_rotation) && !outOfBounds(sf::Vector2i(temp_x, temp_y), temp_placed, temp_rotation)) {
+		if (canPlace(sf::Vector2i(temp_x, temp_y), temp_placed, temp_rotation) && !outOfBounds(sf::Vector2i(temp_x,temp_y), temp_placed, temp_rotation)) {
 			ships[temp_placed].set(true, temp_placed, temp_rotation, sf::Vector2i(temp_x, temp_y));
 			temp_placed++;
 		}
@@ -34,67 +34,86 @@ void Computer::placeShips()
 bool Computer::colliding(sf::Vector2i position)
 {
 	for (int i = 0; i < 5; i++) {
-		for (int s = 0; s <= getShip(i).getShipSize(); s++) {
-			switch (getShip(i).getShipRotation()) {
-			case 0:
-				if (getShip(i).getShipPosition().x + s == position.x && getShip(i).getShipPosition().y == position.y)
-					return true;
+		if (getShip(i).getShipPlaced()) {
 
-				break;
-			case 1:
-				if (getShip(i).getShipPosition().x == position.x && getShip(i).getShipPosition().y + s == position.y)
-					return true;
+			for (int s = 0; s <= getShip(i).getShipSize(); s++) {
+				switch (getShip(i).getShipRotation()) {
+				case 0:
+					if (getShip(i).getShipPosition().x + s == position.x && getShip(i).getShipPosition().y == position.y)
+						return true;
 
-				break;
+					break;
+				case 1:
+					if (getShip(i).getShipPosition().x == position.x && getShip(i).getShipPosition().y + s == position.y)
+						return true;
+
+					break;
+				}
+
 			}
 		}
 	}
 	return false;
 }
 
-bool Computer::placingCollision(sf::Vector2i position, int size, int rotation)
+bool Computer::canPlace(sf::Vector2i position, int size, int rotation)
 {
-	// rotation 0 sf::IntRect temp_rect(position, sf::Vector2i(40 * size, 40));
-	// rotation 1 sf::IntRect temp_rect(position, sf::Vector2i(40, 40 * size));
+	for (int i = 0; i < 5; i++) {
+		
+		printf("trying to place first ship\n");
+		if (getShip(i).getShipPlaced() && i > 0) {
+			
+			for (int s = 0; s <= getShip(i).getShipSize(); s++) {
+
+				switch (getShip(i).getShipRotation()) {
+				case 0:
+					for (int s2 = 0; s2 <= size; s++) {
+						if (rotation == 0) { // 0 0
+							if (getShip(i).getShipPosition().x + s == position.x + s2 && getShip(i).getShipPosition().y == position.y)
+								return false;
+							else
+								return true;
+						}
+						else { // 0 1
+							if (getShip(i).getShipPosition().x + s == position.x && getShip(i).getShipPosition().y == position.y + s2)
+								return false;
+							else
+								return true;
+						}
+					}
+					break;
+				case 1:
+					for (int s2 = 0; s2 <= size; s++) {
+						if (rotation == 0) { // 1 0
+							if (getShip(i).getShipPosition().x == position.x + s2 && getShip(i).getShipPosition().y + s == position.y)
+								return false;
+							else
+								return true;
+						}
+						else { // 1 1
+							if (getShip(i).getShipPosition().x == position.x && getShip(i).getShipPosition().y + s == position.y + s2)
+								return false;
+							else
+								return true;
+						}
+					}
+					break;
+				}
+
+			}
+		}
+		else {
+			return true;
+		}
 	
-	// rotation 0 sf::IntRect placed_rect(getShip(i).getShipPosition(), sf::Vector2i(40 * getShip(i).getShipSize(), 40));
-	// rotation 1 sf::IntRect placed_rect(getShip(i).getShipPosition(), sf::Vector2i(40, 40 * getShip(i).getShipSize()));
-
-	for (int i = 0; i < 5; i++)
-	{
-		if (rotation == 0 && getShip(i).getShipRotation() == 0) {
-			sf::IntRect temp_rect(position, sf::Vector2i(40 * size, 40));
-			sf::IntRect placed_rect(getShip(i).getShipPosition(), sf::Vector2i(40 * getShip(i).getShipSize(), 40));
-			if (temp_rect.intersects(placed_rect)) return true;
-			else return false;
-		}
-		else if (rotation == 1 && getShip(i).getShipRotation() == 1) {
-			sf::IntRect temp_rect(position, sf::Vector2i(40, 40 * size));
-			sf::IntRect placed_rect(getShip(i).getShipPosition(), sf::Vector2i(40, 40 * getShip(i).getShipSize()));
-			if (temp_rect.intersects(placed_rect)) return true;
-			else return false;
-		}
-		else if (rotation == 1 && getShip(i).getShipRotation() == 0) {
-			sf::IntRect temp_rect(position, sf::Vector2i(40, 40 * size));
-			sf::IntRect placed_rect(getShip(i).getShipPosition(), sf::Vector2i(40 * getShip(i).getShipSize(), 40));
-			if (temp_rect.intersects(placed_rect)) return true;
-			else return false;
-		}
-		else if (rotation == 0 && getShip(i).getShipRotation() == 1) {
-			sf::IntRect temp_rect(position, sf::Vector2i(40 * size, 40));
-			sf::IntRect placed_rect(getShip(i).getShipPosition(), sf::Vector2i(40, 40 * getShip(i).getShipSize()));
-			if (temp_rect.intersects(placed_rect)) return true;
-			else return false;
-		}
 	}
-
-	return false;
 }
 
 bool Computer::outOfBounds(sf::Vector2i position, int size, int rotation)
 {
 	for (int i = 0; i < 5; i++) {
 		for (int s = 0; s <= size; s++) {
+
 			switch (rotation) {
 			case 0:
 				if (position.x + s >= 10 || position.y >= 10)

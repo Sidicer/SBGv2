@@ -8,7 +8,7 @@ int main()
 	Player player;
 	
 	for (int i = 0; i < 5; i++) {
-		printf("%i:%i:%i\n",computer.getShip(i).getShipPosition().x, computer.getShip(i).getShipPosition().y, computer.getShip(i).getShipRotation());
+		printf("%i:%i:%i:%i\n",computer.getShip(i).getShipSize(), computer.getShip(i).getShipRotation(), computer.getShip(i).getShipPosition().x, computer.getShip(i).getShipPosition().y);
 	}
 
     // Init Window

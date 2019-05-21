@@ -14,7 +14,7 @@ public:
 
 	bool colliding(sf::Vector2i position);
 
-	bool placingCollision(sf::Vector2i position, int size, int rotation);
+	bool canPlace(sf::Vector2i position, int size, int rotation);
 	bool outOfBounds(sf::Vector2i position, int size, int rotation);
 };
 

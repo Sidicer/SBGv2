@@ -36,6 +36,12 @@ int Player::getPlacingShipId() { return this->placing_ship_id; }
 
 void Player::changePlacingShipId()
 {
+	if (this->placing_ship_id < 4 && !this->getShip(placing_ship_id).getShipPlaced()) this->placing_ship_id++;
+	else this->placing_ship_id = 0;
+}
+
+void Player::changePlacingShipId(bool program)
+{
 	if (this->placing_ship_id < 4) this->placing_ship_id++;
 	else this->placing_ship_id = 0;
 }
@@ -44,7 +50,8 @@ void Player::setShipRotation()
 {
 	this->placing_rotation = (this->placing_rotation == 0) ? 1 : 0;
 	for (int i = 0; i < 5; i++)
-		getShip(i).setShipRotation(placing_rotation);
+		if(!getShip(i).getShipPlaced())
+			getShip(i).setShipRotation(placing_rotation);
 }
 
 // Checks if the ship that's being placed does not intersect with an already placed ship

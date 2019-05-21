@@ -90,14 +90,18 @@ int main()
                 window.close();
 
 			if (player.isCurrentlyPlacing()) {
+				if (event.type == sf::Event::KeyPressed) {
+					if (event.key.code == sf::Keyboard::R) {
+						player.setShipRotation();
+					}
+				}
 				if (event.type == sf::Event::MouseButtonPressed) {
 					if (event.mouseButton.button == sf::Mouse::Right) {
 						player.changePlacingShipId();
 					}
-				}
-				if (event.type == sf::Event::KeyPressed) {
-					if (event.key.code == sf::Keyboard::R) {
-						player.setShipRotation();
+					if (event.mouseButton.button == sf::Mouse::Left) {
+						player.getShip(player.getPlacingShipId()).set(true, player.getShip(player.getPlacingShipId()).getShipSize(), player.getShip(player.getPlacingShipId()).getShipRotation(), sf::Vector2i(mousePosGrid));
+						player.changePlacingShipId(true);
 					}
 				}
 			}

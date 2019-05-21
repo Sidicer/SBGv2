@@ -100,8 +100,14 @@ int main()
 						player.changePlacingShipId();
 					}
 					if (event.mouseButton.button == sf::Mouse::Left) {
-						player.getShip(player.getPlacingShipId()).set(true, player.getShip(player.getPlacingShipId()).getShipSize(), player.getShip(player.getPlacingShipId()).getShipRotation(), sf::Vector2i(mousePosGrid));
-						player.changePlacingShipId(true);
+						if (player.canPlace(
+							sf::Vector2i(mousePosGrid),
+							player.getShip(player.getPlacingShipId()).getShipSize(),
+							player.getShip(player.getPlacingShipId()).getShipRotation()
+						)) {
+							player.getShip(player.getPlacingShipId()).set(true, player.getShip(player.getPlacingShipId()).getShipSize(), player.getShip(player.getPlacingShipId()).getShipRotation(), sf::Vector2i(mousePosGrid));
+							player.changePlacingShipId(true);
+						}
 					}
 				}
 			}

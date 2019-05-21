@@ -7,10 +7,6 @@ int main()
 	Computer computer;
 	Player player;
 	
-	for (int i = 0; i < 5; i++) {
-		printf("%i:%i:%i:%i\n",computer.getShip(i).getShipSize(), computer.getShip(i).getShipRotation(), computer.getShip(i).getShipPosition().x, computer.getShip(i).getShipPosition().y);
-	}
-
     // Init Window
     sf::RenderWindow window(sf::VideoMode(800,600), "Sidicers Battleships Game");
 	window.setFramerateLimit(60);

@@ -37,7 +37,7 @@ int Player::getPlacingShipId() { return this->placing_ship_id; }
 void Player::changePlacingShipId()
 {
 	if (this->placing_ship_id < 4 && !this->getShip(placing_ship_id).getShipPlaced()) this->placing_ship_id++;
-	else this->placing_ship_id = 0;
+	else this->placing_ship_id = 0; 
 }
 
 void Player::changePlacingShipId(bool program)

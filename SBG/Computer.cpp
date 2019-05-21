@@ -52,15 +52,19 @@ void Computer::placeShips()
 
 		if (canPlace(sf::Vector2i(temp_x, temp_y), temp_placed, temp_rotation) && !outOfBounds(sf::Vector2i(temp_x,temp_y), temp_placed, temp_rotation)) {
 			ships[temp_placed].set(true, temp_placed, temp_rotation, sf::Vector2i(temp_x, temp_y));
-			printf("I placed #%i ship\n", temp_placed);
+			printf("I placed #%i ship, rotation:%i\n", temp_placed, temp_rotation);
 			printf("%i:%i\n\n", temp_x, temp_y);
 			temp_placed++;
+		}
+		else {
+			printf("I didnt place #%i\n", temp_placed);
 		}
 	}
 }
 
 bool Computer::canPlace(sf::Vector2i position, int size, int rotation)
 {
+	bool temp_canplace = false;
 	for (int i = 0; i < 5; i++)
 	{
 		//printf("I'm checking if I can place a ship compared to %i\n", i);
@@ -74,26 +78,26 @@ bool Computer::canPlace(sf::Vector2i position, int size, int rotation)
 					//printf("First ships rotation is %i, second ship is 0\n", getShip(i).getShipRotation());
 					if ((getShip(i).getShipPosition().x + size_1) == (position.x + size_2) && getShip(i).getShipPosition().y == position.y)
 					{
-						printf("I cannot place because: %i:%i intersects %i:%i\n", (getShip(i).getShipPosition().x + size_1),(position.x + size_2),getShip(i).getShipPosition().y,position.y);
+						//printf("I cannot place because: %i:%i intersects %i:%i\n", (getShip(i).getShipPosition().x + size_1), getShip(i).getShipPosition().y, (position.x + size_2),position.y);
 						return false;
 					}
 					else
 					{
-						printf("I can place because: %i:%i doesnt intersect %i:%i\n", (getShip(i).getShipPosition().x + size_1), (position.x + size_2), getShip(i).getShipPosition().y, position.y);
-						return true;
+						//printf("I can place because: %i:%i doesnt intersect %i:%i\n", (getShip(i).getShipPosition().x + size_1), getShip(i).getShipPosition().y, (position.x + size_2), position.y);
+						temp_canplace = true;
 					}
 
 				} else if (getShip(i).getShipRotation() == 1 && rotation == 1) { // 1 1
 					//printf("First ships rotation is %i, second ship is 1\n", getShip(i).getShipRotation());
 					if (getShip(i).getShipPosition().x == position.x && (getShip(i).getShipPosition().y + size_1) == (position.y + size_2))
 					{
-						printf("I cannot place because: %i:%i intersects %i:%i\n", getShip(i).getShipPosition().x,position.x,(getShip(i).getShipPosition().y + size_1),(position.y + size_2));
+						//printf("I cannot place because: %i:%i intersects %i:%i\n", getShip(i).getShipPosition().x, (getShip(i).getShipPosition().y + size_1),position.x,(position.y + size_2));
 						return false;
 					}
 					else
 					{
-						printf("I can place because: %i:%i doesnt intersect %i:%i\n", getShip(i).getShipPosition().x, position.x, (getShip(i).getShipPosition().y + size_1), (position.y + size_2));
-						return true;
+						//printf("I can place because: %i:%i doesnt intersect %i:%i\n", getShip(i).getShipPosition().x, (getShip(i).getShipPosition().y + size_1), position.x, (position.y + size_2));
+						temp_canplace = true;
 					}
 
 				}
@@ -101,12 +105,13 @@ bool Computer::canPlace(sf::Vector2i position, int size, int rotation)
 					//printf("First ships rotation is %i, second ship is 1\n", getShip(i).getShipRotation());
 					if ((getShip(i).getShipPosition().x + size_1) == position.x && getShip(i).getShipPosition().y == (position.y + size_2))
 					{
-						printf("I cannot place because: %i:%i intersects %i:%i\n", (getShip(i).getShipPosition().x + size_1),position.x,getShip(i).getShipPosition().y,(position.y + size_2));
+						//printf("I cannot place because: %i:%i intersects %i:%i\n", (getShip(i).getShipPosition().x + size_1), getShip(i).getShipPosition().y,position.x,(position.y + size_2));
 						return false;
 					}
 					else
 					{
-						return true;
+						//printf("I can place because: %i:%i doesnt intersect %i:%i\n", (getShip(i).getShipPosition().x + size_1), getShip(i).getShipPosition().y, position.x, (position.y + size_2));
+						temp_canplace = true;
 					}
 
 				}
@@ -114,12 +119,13 @@ bool Computer::canPlace(sf::Vector2i position, int size, int rotation)
 					//printf("First ships rotation is %i, second ship is 0\n", getShip(i).getShipRotation());
 					if (getShip(i).getShipPosition().x == (position.x + size_2) && (getShip(i).getShipPosition().y + size_1) == position.y)
 					{
-						printf("I cannot place because: %i:%i intersects %i:%i\n", getShip(i).getShipPosition().x,(position.x + size_2),(getShip(i).getShipPosition().y + size_1),position.y);
+						//printf("I cannot place because: %i:%i intersects %i:%i\n", getShip(i).getShipPosition().x, (getShip(i).getShipPosition().y + size_1),(position.x + size_2),position.y);
 						return false;
 					}
 					else
 					{
-						return true;
+						//printf("I can place because: %i:%i doesnt intersect %i:%i\n", getShip(i).getShipPosition().x, (getShip(i).getShipPosition().y + size_1), (position.x + size_2), position.y);
+						temp_canplace = true;
 					}
 
 				}
@@ -127,61 +133,8 @@ bool Computer::canPlace(sf::Vector2i position, int size, int rotation)
 		}
 
 	}
-
+	return temp_canplace;
 }
-
-//bool Computer::canPlace(sf::Vector2i position, int size, int rotation)
-//{
-//	for (int i = 0; i < 5; i++) {
-//		printf("#%i-%i:%i, %d\n", i, getShip(i).getShipPosition().x, getShip(i).getShipPosition().y, getShip(i).getShipPlaced());
-//		printf("trying to place first ship\n");
-//		if (getShip(i).getShipPlaced() && i > 0) {
-//			
-//			for (int s = 0; s <= getShip(i).getShipSize(); s++) {
-//			
-//				switch (getShip(i).getShipRotation()) {
-//				case 0:
-//					for (int s2 = 0; s2 <= size; s++) {
-//						if (rotation == 0) { // 0 0
-//							if (getShip(i).getShipPosition().x + s == position.x + s2 && getShip(i).getShipPosition().y == position.y)
-//								return false;
-//							else
-//								return true;
-//						}
-//						else { // 0 1
-//							if (getShip(i).getShipPosition().x + s == position.x && getShip(i).getShipPosition().y == position.y + s2)
-//								return false;
-//							else
-//								return true;
-//						}
-//					}
-//					break;
-//				case 1:
-//					for (int s2 = 0; s2 <= size; s++) {
-//						if (rotation == 0) { // 1 0
-//							if (getShip(i).getShipPosition().x == position.x + s2 && getShip(i).getShipPosition().y + s == position.y)
-//								return false;
-//							else
-//								return true;
-//						}
-//						else { // 1 1
-//							if (getShip(i).getShipPosition().x == position.x && getShip(i).getShipPosition().y + s == position.y + s2)
-//								return false;
-//							else
-//								return true;
-//						}
-//					}
-//					break;
-//				}
-//				
-//			}
-//		}
-//		else {
-//			return true;
-//		}
-//
-//	}
-//}
 
 bool Computer::outOfBounds(sf::Vector2i position, int size, int rotation)
 {

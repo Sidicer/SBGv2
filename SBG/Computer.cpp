@@ -65,25 +65,25 @@ bool Computer::placingCollision(sf::Vector2i position, int size, int rotation)
 		if (rotation == 0 && getShip(i).getShipRotation() == 0) {
 			sf::IntRect temp_rect(position, sf::Vector2i(40 * size, 40));
 			sf::IntRect placed_rect(getShip(i).getShipPosition(), sf::Vector2i(40 * getShip(i).getShipSize(), 40));
-			if (temp_rect.intersects(placed_rect)) { printf("intersects\n"); return true; }
+			if (temp_rect.intersects(placed_rect)) return true;
 			else return false;
 		}
 		else if (rotation == 1 && getShip(i).getShipRotation() == 1) {
 			sf::IntRect temp_rect(position, sf::Vector2i(40, 40 * size));
 			sf::IntRect placed_rect(getShip(i).getShipPosition(), sf::Vector2i(40, 40 * getShip(i).getShipSize()));
-			if (temp_rect.intersects(placed_rect)) { printf("intersects\n"); return true; }
+			if (temp_rect.intersects(placed_rect)) return true;
 			else return false;
 		}
 		else if (rotation == 1 && getShip(i).getShipRotation() == 0) {
 			sf::IntRect temp_rect(position, sf::Vector2i(40, 40 * size));
 			sf::IntRect placed_rect(getShip(i).getShipPosition(), sf::Vector2i(40 * getShip(i).getShipSize(), 40));
-			if (temp_rect.intersects(placed_rect)) { printf("intersects\n"); return true; }
+			if (temp_rect.intersects(placed_rect)) return true;
 			else return false;
 		}
 		else if (rotation == 0 && getShip(i).getShipRotation() == 1) {
 			sf::IntRect temp_rect(position, sf::Vector2i(40 * size, 40));
 			sf::IntRect placed_rect(getShip(i).getShipPosition(), sf::Vector2i(40, 40 * getShip(i).getShipSize()));
-			if (temp_rect.intersects(placed_rect)) { printf("intersects\n"); return true; }
+			if (temp_rect.intersects(placed_rect)) return true;
 			else return false;
 		}
 	}

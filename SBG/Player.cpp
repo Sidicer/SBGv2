@@ -1,8 +1,19 @@
 #include "Player.h"
 
 Player::Player() {
+	
+	// Create a Dynamic array to store our ships
 	this->ships = new Ship[5];
+
 	this->currently_placing = false;
+	
+	// Initialize those 5 ships with their correct sizes
+	for (int i = 0; i < 5; i++) {
+		if (i == 0) this->ships[i].setShipSize(1);
+		if (i > 0 && i < 3) this->ships[i].setShipSize(2);
+		if (i == 3) this->ships[i].setShipSize(3);
+		if (i == 4) this->ships[i].setShipSize(4);
+	}
 }
 
 Player::~Player() {
@@ -10,6 +21,7 @@ Player::~Player() {
 	this->ships = NULL;
 }
 
+// Returns data about the "index"ed ship from Ship class
 Ship & Player::getShip(const int index) {
 	return this->ships[index];
 }
@@ -18,6 +30,7 @@ bool Player::isCurrentlyPlacing() {	return this->currently_placing; }
 
 void Player::isCurrentlyPlacing(bool set) { this->currently_placing = set; }
 
+// Checks if the ship that's being placed does not intersect with an already placed ship
 bool Player::canPlace(sf::Vector2i position, int size, int rotation)
 {
 	bool temp_canplace = false;
@@ -93,6 +106,7 @@ bool Player::canPlace(sf::Vector2i position, int size, int rotation)
 	return temp_canplace;
 }
 
+// Checks if the ship that's being placed is out of bounds
 bool Player::outOfBounds(sf::Vector2i position, int size, int rotation)
 {
 	for (int i = 0; i < 5; i++) {

@@ -8,11 +8,11 @@ int main()
 	Player player;
 	
     // Init Window
-    sf::RenderWindow window(sf::VideoMode(800,600), "Sidicers Battleships Game");
+    sf::RenderWindow window(sf::VideoMode(1000,800), "Sidicers Battleships Game");
 	window.setFramerateLimit(60);
 
     // Init Game
-    float gridSizeF = 40.f;
+    float gridSizeF = 50.f;
     unsigned gridSizeU = static_cast<unsigned>(gridSizeF);
     float dt = 0.f;
     sf::Clock dtClock;
@@ -41,7 +41,7 @@ int main()
 
     // Init camera (view)
     sf::View view;
-    view.setSize(800.f,600.f);
+    view.setSize(1000.f,800.f);
     view.setCenter(window.getSize().x/2.f,window.getSize().y/2.f);
     float viewSpeed = 200.f;
 

@@ -2,7 +2,17 @@
 
 Computer::Computer()
 {
+	// Create a Dynamic array to store our ships
 	this->ships = new Ship[5];
+
+	// Initialize those 5 ships with their correct sizes
+	for (int i = 0; i < 5; i++) {
+		if (i == 0) this->ships[i].setShipSize(1);
+		if (i > 0 && i < 3) this->ships[i].setShipSize(2);
+		if (i == 3) this->ships[i].setShipSize(3);
+		if (i == 4) this->ships[i].setShipSize(4);
+	}
+
 	placeShips();
 }
 
@@ -11,22 +21,28 @@ Computer::~Computer()
 {
 }
 
+// Returns data about the "index"ed ship from Ship class
 Ship & Computer::getShip(const int index) {
 	return this->ships[index];
 }
 
+// Function that places ships
 void Computer::placeShips()
 {
+	printf("Computer is placing ships. Please wait...\n");
+	// To generate more random numbers
 	srand(time(NULL));
 	int temp_placed = 0, temp_x = -1, temp_y = -1, temp_rotation = 0;
 
+	// Loop through 5 ships until all of them are placed
 	while(temp_placed < 5) {
 		temp_x = rand() % 10;
 		temp_y = rand() % 10;
 		temp_rotation = rand() % 2;
 
-		if (canPlace(sf::Vector2i(temp_x, temp_y), temp_placed, temp_rotation) && !outOfBounds(sf::Vector2i(temp_x,temp_y), temp_placed, temp_rotation)) {
-			ships[temp_placed].set(true, temp_placed, temp_rotation, sf::Vector2i(temp_x, temp_y));
+		// If "canPlace" returns true and outOfBounds returns false - ship will be placed
+		if (canPlace(sf::Vector2i(temp_x, temp_y), getShip(temp_placed).getShipSize(), temp_rotation) && !outOfBounds(sf::Vector2i(temp_x,temp_y), getShip(temp_placed).getShipSize(), temp_rotation)) {
+			ships[temp_placed].set(true, getShip(temp_placed).getShipSize(), temp_rotation, sf::Vector2i(temp_x, temp_y));
 			printf("I placed #%i ship, rotation:%i\n", temp_placed, temp_rotation);
 			printf("%i:%i\n\n", temp_x, temp_y);
 			temp_placed++;
@@ -37,6 +53,7 @@ void Computer::placeShips()
 	}
 }
 
+// Checks if the ship that's being placed does not intersect with an already placed ship
 bool Computer::canPlace(sf::Vector2i position, int size, int rotation)
 {
 	bool temp_canplace = false;
@@ -111,6 +128,7 @@ bool Computer::canPlace(sf::Vector2i position, int size, int rotation)
 	return temp_canplace;
 }
 
+// Checks if the ship that's being placed is out of bounds
 bool Computer::outOfBounds(sf::Vector2i position, int size, int rotation)
 {
 	for (int i = 0; i < 5; i++) {

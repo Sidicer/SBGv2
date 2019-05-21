@@ -12,8 +12,6 @@ public:
 	Ship& getShip(const int index);
 	void placeShips();
 
-	bool colliding(sf::Vector2i position);
-
 	bool canPlace(sf::Vector2i position, int size, int rotation);
 	bool outOfBounds(sf::Vector2i position, int size, int rotation);
 };

@@ -15,31 +15,6 @@ Ship & Computer::getShip(const int index) {
 	return this->ships[index];
 }
 
-bool Computer::colliding(sf::Vector2i position)
-{
-	for (int i = 0; i < 5; i++) {
-		if (getShip(i).getShipPlaced()) {
-
-			for (int s = 0; s <= getShip(i).getShipSize(); s++) {
-				switch (getShip(i).getShipRotation()) {
-				case 0:
-					if (getShip(i).getShipPosition().x + s == position.x && getShip(i).getShipPosition().y == position.y)
-						return true;
-
-					break;
-				case 1:
-					if (getShip(i).getShipPosition().x == position.x && getShip(i).getShipPosition().y + s == position.y)
-						return true;
-
-					break;
-				}
-
-			}
-		}
-	}
-	return false;
-}
-
 void Computer::placeShips()
 {
 	srand(time(NULL));

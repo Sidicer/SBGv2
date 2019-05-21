@@ -109,8 +109,10 @@ int main()
         }
 
         // Update
-		if (computer.canPlace(sf::Vector2i(mousePosGrid), 0, 0))
+		if (!computer.canPlace(sf::Vector2i(mousePosGrid), 0, 0))
 			test_collision.setFillColor(sf::Color::Red);
+		else if (!player.canPlace(sf::Vector2i(mousePosGrid), 0, 0))
+			test_collision.setFillColor(sf::Color::Blue);
 		else
 			test_collision.setFillColor(sf::Color::Green);
 

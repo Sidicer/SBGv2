@@ -28,7 +28,18 @@ Ship & Player::getShip(const int index) {
 	return this->ships[index];
 }
 
-bool Player::isCurrentlyPlacing() {	return this->currently_placing; }
+bool Player::isCurrentlyPlacing() {	
+	bool temp_placing = true;
+	for (int i = 0; i < 5; i++)
+		if (!ships[i].getShipPlaced())
+			temp_placing = true;
+		else
+		{
+			temp_placing = false;
+		}
+	this->currently_placing = temp_placing;
+	return this->currently_placing;
+}
 
 void Player::isCurrentlyPlacing(bool set) { this->currently_placing = set; }
 

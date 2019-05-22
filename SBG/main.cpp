@@ -1,14 +1,16 @@
 #include <sstream>
 
+#include "Player.h"
 #include "Computer.h"
 #include "Game_engine.h"
 
 int main()
 {
+	Game_engine game;
 	Computer computer;
 	Player player;
-	
-    // Init Window
+
+	// Init Window
     sf::RenderWindow window(sf::VideoMode(1000,800), "Sidicers Battleship Game");
 	window.setFramerateLimit(60);
 
@@ -73,7 +75,14 @@ int main()
     // Init game elements
     sf::RectangleShape ship_part(sf::Vector2f(gridSizeF, gridSizeF));
     ship_part.setFillColor(sf::Color(255,255,255,255));
+
     Ship ships[10];
+	sf::Vector2i hitShips[34];
+	int alreadyHit = 0;
+
+	sf::RectangleShape hit_part(sf::Vector2f(gridSizeF, gridSizeF));
+	hit_part.setFillColor(sf::Color::Red);
+	hit_part.setPosition(sf::Vector2f(-1.f * gridSizeF, -1.f * gridSizeF));
 
 	sf::RectangleShape test_collision(sf::Vector2f(gridSizeF, gridSizeF));
 	test_collision.setFillColor(sf::Color::Red);
@@ -104,7 +113,8 @@ int main()
             << "View: " << mousePosView.x << " " << mousePosView.y << "\n"*/
         ss << "Mouse in Grid: " << mousePosGrid.x << " " << mousePosGrid.y << "\n"
             //<< "Player: " << player.getShip(0).getShipPosition().x << " " << player.getShip(0).getShipPosition().y << "\n"
-			<< "Current rotation: " << player.getShip(player.getPlacingShipId()).getShipRotation() << "\n";
+			<< "Current rotation: " << player.getShip(player.getPlacingShipId()).getShipRotation() << "\n"
+			<< "Already hit ships: "<< alreadyHit << "\n";
 		technical_data.setString(ss.str());
 
         // Events
@@ -140,6 +150,16 @@ int main()
 					}
 				}
 			}
+			else {
+				if (event.type == sf::Event::MouseButtonPressed) {
+					if (event.mouseButton.button == sf::Mouse::Left) {
+						if (game.whoIsShooting()) {
+							player.shoot(computer, sf::Vector2i(mousePosGrid));
+							game.whoIsShooting(true);
+						}
+					}
+				}
+			}
 				
         }
 
@@ -150,6 +170,19 @@ int main()
 			test_collision.setFillColor(sf::Color::Blue);
 		else
 			test_collision.setFillColor(sf::Color::Green);
+
+		if (!player.isCurrentlyPlacing()) {
+			
+			if (game.whoIsShooting() == 0) {
+				information_text.setString("Computer is shooting");
+				computer.shoot(player);
+				game.whoIsShooting(true);
+			}
+			else {
+				information_text.setString("Player is shooting");
+			}
+			
+		}
 
         // Update Input
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::A)) // Left
@@ -253,6 +286,10 @@ int main()
 			}
 		}
 
+		for (int i = 0; i < alreadyHit; i++) {
+			hit_part.setPosition(sf::Vector2f(hitShips[i].x * gridSizeF, hitShips[i].y * gridSizeF));
+			window.draw(hit_part);
+		}		
 		window.draw(test_collision);
 		
 

@@ -150,3 +150,25 @@ bool Computer::outOfBounds(sf::Vector2i position, int size, int rotation)
 	}
 	return false;
 }
+
+bool Computer::receiveShot(sf::Vector2i position)
+{
+	if (canPlace(position, 0, 0))
+		return false;
+	else {
+		printf("Computer: You hit my ship!\n");
+		return true;
+	}
+}
+
+void Computer::shoot(Player& player)
+{
+	srand(time(NULL));
+	sf::Vector2i temp_position(rand() % 9 + 10, rand() % 10);
+	printf("Computer: I tried to shoot at %i:%i\n", temp_position);
+	if (player.receiveShot(sf::Vector2i(temp_position))) {
+		/*hitShips[alreadyHit].x = temp_position.x;
+		hitShips[alreadyHit].y = temp_position.y;
+		alreadyHit++;*/
+	}
+}

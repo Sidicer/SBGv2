@@ -168,3 +168,22 @@ bool Player::outOfBounds(sf::Vector2i position, int size, int rotation)
 	}
 	return false;
 }
+
+bool Player::receiveShot(sf::Vector2i position)
+{
+	if (canPlace(position, 0, 0))
+		return false;
+	else {
+		printf("Player: You hit my ship!\n");
+		return true;
+	}
+}
+
+void Player::shoot(Computer & computer, sf::Vector2i position)
+{
+	if (computer.receiveShot(position)) {
+		/*hitShips[alreadyHit].x = mousePosGrid.x;
+		hitShips[alreadyHit].y = mousePosGrid.y;
+		alreadyHit++;*/
+	}
+}

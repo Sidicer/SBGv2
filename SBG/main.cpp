@@ -75,14 +75,15 @@ int main()
     // Init game elements
     sf::RectangleShape ship_part(sf::Vector2f(gridSizeF, gridSizeF));
     ship_part.setFillColor(sf::Color(255,255,255,255));
-
-    Ship ships[10];
-	sf::Vector2i hitShips[34];
-	int alreadyHit = 0;
-
+	Ship ships[10];
+	
 	sf::RectangleShape hit_part(sf::Vector2f(gridSizeF, gridSizeF));
 	hit_part.setFillColor(sf::Color::Red);
 	hit_part.setPosition(sf::Vector2f(-1.f * gridSizeF, -1.f * gridSizeF));
+
+	sf::RectangleShape miss_part(sf::Vector2f(gridSizeF, gridSizeF));
+	miss_part.setFillColor(sf::Color::Blue);
+	miss_part.setPosition(sf::Vector2f(-1.f * gridSizeF, -1.f * gridSizeF));
 
 	sf::RectangleShape test_collision(sf::Vector2f(gridSizeF, gridSizeF));
 	test_collision.setFillColor(sf::Color::Red);
@@ -114,7 +115,8 @@ int main()
         ss << "Mouse in Grid: " << mousePosGrid.x << " " << mousePosGrid.y << "\n"
             //<< "Player: " << player.getShip(0).getShipPosition().x << " " << player.getShip(0).getShipPosition().y << "\n"
 			<< "Current rotation: " << player.getShip(player.getPlacingShipId()).getShipRotation() << "\n"
-			<< "Already hit ships: "<< alreadyHit << "\n";
+			<< "Already hit ships: "<< game.getHit().size() << "\n"
+			<< "Missed ships: " << game.getMiss().size() << "\n";
 		technical_data.setString(ss.str());
 
         // Events
@@ -154,7 +156,7 @@ int main()
 				if (event.type == sf::Event::MouseButtonPressed) {
 					if (event.mouseButton.button == sf::Mouse::Left) {
 						if (game.whoIsShooting()) {
-							player.shoot(computer, sf::Vector2i(mousePosGrid));
+							player.shoot(computer, sf::Vector2i(mousePosGrid), game);
 							game.whoIsShooting(true);
 						}
 					}
@@ -162,6 +164,7 @@ int main()
 			}
 				
         }
+
 
         // Update
 		if (!computer.canPlace(sf::Vector2i(mousePosGrid), 0, 0))
@@ -175,7 +178,7 @@ int main()
 			
 			if (game.whoIsShooting() == 0) {
 				information_text.setString("Computer is shooting");
-				computer.shoot(player);
+				computer.shoot(player, game);
 				game.whoIsShooting(true);
 			}
 			else {
@@ -286,12 +289,17 @@ int main()
 			}
 		}
 
-		for (int i = 0; i < alreadyHit; i++) {
-			hit_part.setPosition(sf::Vector2f(hitShips[i].x * gridSizeF, hitShips[i].y * gridSizeF));
+		for (size_t i = 0; i < game.getHit().size(); i++)
+		{
+			hit_part.setPosition(sf::Vector2f(game.getHit()[i].x*gridSizeF,game.getHit()[i].y*gridSizeF));
 			window.draw(hit_part);
-		}		
-		window.draw(test_collision);
-		
+		}
+
+		for (size_t i = 0; i < game.getMiss().size(); i++)
+		{
+			miss_part.setPosition(sf::Vector2f(game.getMiss()[i].x*gridSizeF, game.getMiss()[i].y*gridSizeF));
+			window.draw(miss_part);
+		}
 
         window.setView(window.getDefaultView());
         // Render UI

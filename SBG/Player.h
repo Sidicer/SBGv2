@@ -1,7 +1,8 @@
 #pragma once
 
 #include "Ship.h"
-#include "Computer.h"
+class Computer;
+class Game_engine;
 
 class Player : public Ship {
 private:
@@ -27,6 +28,6 @@ public:
 	bool canPlace(sf::Vector2i position, int size, int rotation);
 	bool outOfBounds(sf::Vector2i position, int size, int rotation);
 
-	bool receiveShot(sf::Vector2i position);
-	void shoot(Computer& computer, sf::Vector2i position);
+	bool receiveShot(sf::Vector2i position, Game_engine &game);
+	void shoot(Computer& computer, sf::Vector2i position, Game_engine &game);
 };

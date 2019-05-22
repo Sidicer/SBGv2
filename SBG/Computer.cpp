@@ -1,4 +1,5 @@
 #include "Computer.h"
+#include "Game_engine.h"
 
 Computer::Computer()
 {
@@ -29,7 +30,7 @@ Ship & Computer::getShip(const int index) {
 // Function that places ships
 void Computer::placeShips()
 {
-	printf("Computer is placing ships. Please wait...\n");
+	//printf("Computer is placing ships. Please wait...\n");
 	// To generate more random numbers
 	srand(time(NULL));
 	int temp_placed = 0, temp_x = -1, temp_y = -1, temp_rotation = 0;
@@ -43,12 +44,12 @@ void Computer::placeShips()
 		// If "canPlace" returns true and outOfBounds returns false - ship will be placed
 		if (canPlace(sf::Vector2i(temp_x, temp_y), getShip(temp_placed).getShipSize(), temp_rotation) && !outOfBounds(sf::Vector2i(temp_x,temp_y), getShip(temp_placed).getShipSize(), temp_rotation)) {
 			ships[temp_placed].set(true, getShip(temp_placed).getShipSize(), temp_rotation, sf::Vector2i(temp_x, temp_y));
-			printf("I placed #%i ship, rotation:%i\n", temp_placed, temp_rotation);
-			printf("%i:%i\n\n", temp_x, temp_y);
+			//printf("I placed #%i ship, rotation:%i\n", temp_placed, temp_rotation);
+			//printf("%i:%i\n\n", temp_x, temp_y);
 			temp_placed++;
 		}
 		else {
-			printf("I didnt place #%i\n", temp_placed);
+			//printf("I didnt place #%i\n", temp_placed);
 		}
 	}
 }
@@ -151,24 +152,49 @@ bool Computer::outOfBounds(sf::Vector2i position, int size, int rotation)
 	return false;
 }
 
-bool Computer::receiveShot(sf::Vector2i position)
+bool Computer::receiveShot(sf::Vector2i position, Game_engine &game)
 {
-	if (canPlace(position, 0, 0))
-		return false;
-	else {
-		printf("Computer: You hit my ship!\n");
-		return true;
+	if (!outOfBounds(position, 0, 0)) {
+		bool temp_bool = false;
+		//printf("recieving shot at %i:%i\n", position);
+		if (canPlace(position, 0, 0)) {
+			game.miss(position);
+			temp_bool = false;
+			return false;
+		}
+		else
+		{
+			if (game.getHit().size() == 0) {
+				temp_bool = true;
+			}
+			else
+			{
+				for (size_t i = 0; i < game.getHit().size(); i++)
+				{
+					//printf("for %i - Does %i:%i equal %i:%i? Size: %i\n", i, position, game.getHit()[i], game.getHit().size());
+					if (position == game.getHit()[i]) {
+						temp_bool = false;
+						return false;
+					}
+					else
+					{
+						temp_bool = true;
+					}
+				}
+			}
+		}
+		if (!temp_bool) { return false; }
+		else {
+			printf("Computer: You hit my ship!\n");
+			game.hit(position);
+		}
 	}
 }
 
-void Computer::shoot(Player& player)
+void Computer::shoot(Player& player, Game_engine &game)
 {
 	srand(time(NULL));
 	sf::Vector2i temp_position(rand() % 9 + 10, rand() % 10);
-	printf("Computer: I tried to shoot at %i:%i\n", temp_position);
-	if (player.receiveShot(sf::Vector2i(temp_position))) {
-		/*hitShips[alreadyHit].x = temp_position.x;
-		hitShips[alreadyHit].y = temp_position.y;
-		alreadyHit++;*/
-	}
+	//printf("Computer: I tried to shoot at %i:%i\n", temp_position);
+	player.receiveShot(sf::Vector2i(temp_position), game);
 }

@@ -1,4 +1,6 @@
 #include "Player.h"
+#include "Computer.h"
+#include "Game_engine.h"
 
 Player::Player() {
 	
@@ -169,21 +171,43 @@ bool Player::outOfBounds(sf::Vector2i position, int size, int rotation)
 	return false;
 }
 
-bool Player::receiveShot(sf::Vector2i position)
+bool Player::receiveShot(sf::Vector2i position, Game_engine &game)
 {
-	if (canPlace(position, 0, 0))
+	bool temp_bool = false;
+	//printf("recieving shot at %i:%i\n", position);
+	if (canPlace(position, 0, 0)) {
+		temp_bool = false;
 		return false;
+	}
+	else
+	{
+		if (game.getHit().size() == 0) {
+			temp_bool = true;
+		}
+		else
+		{
+			for (size_t i = 0; i < game.getHit().size(); i++)
+			{
+				//printf("for %i - Does %i:%i equal %i:%i? Size: %i\n", i, position, game.getHit()[i], game.getHit().size());
+				if (position == game.getHit()[i]) {
+					temp_bool = false;
+					return false;
+				}
+				else
+				{
+					temp_bool = true;
+				}
+			}
+		}
+	}
+	if (!temp_bool) { return false; }
 	else {
 		printf("Player: You hit my ship!\n");
-		return true;
+		game.hit(position);
 	}
 }
 
-void Player::shoot(Computer & computer, sf::Vector2i position)
+void Player::shoot(Computer & computer, sf::Vector2i position, Game_engine &game)
 {
-	if (computer.receiveShot(position)) {
-		/*hitShips[alreadyHit].x = mousePosGrid.x;
-		hitShips[alreadyHit].y = mousePosGrid.y;
-		alreadyHit++;*/
-	}
+	computer.receiveShot(position, game);
 }

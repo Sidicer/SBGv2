@@ -28,16 +28,21 @@ Ship & Player::getShip(const int index) {
 	return this->ships[index];
 }
 
-bool Player::isCurrentlyPlacing() {	
+bool Player::isCurrentlyPlacing() {
 	bool temp_placing = true;
-	for (int i = 0; i < 5; i++)
-		if (!ships[i].getShipPlaced())
+
+
+	for (int i = 0; i < 5; i++) {
+		if (!ships[i].getShipPlaced()) {
 			temp_placing = true;
+		}
 		else
 		{
 			temp_placing = false;
 		}
+	}	
 	this->currently_placing = temp_placing;
+
 	return this->currently_placing;
 }
 
@@ -149,12 +154,12 @@ bool Player::outOfBounds(sf::Vector2i position, int size, int rotation)
 
 			switch (rotation) {
 			case 0:
-				if (position.x + s >= 10 || position.y >= 10)
+				if (position.x + s >= 20 || position.y >= 10 || position.x + s <= 9)
 					return true;
 
 				break;
 			case 1:
-				if (position.x >= 10 || position.y + s >= 10)
+				if (position.x >= 20 || position.y + s >= 10 || position.x <= 9)
 					return true;
 
 				break;

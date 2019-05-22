@@ -1,6 +1,7 @@
 #include <sstream>
 
 #include "Computer.h"
+#include "Game_engine.h"
 
 int main()
 {
@@ -30,14 +31,38 @@ int main()
     sf::RectangleShape separator(sf::Vector2f(1.f, gridSizeF));
     separator.setFillColor(sf::Color(255,255,255,255));
 
-    sf::Text text;
+	// Init all texts
+    sf::Text technical_data,
+			game_title,
+			player_text,
+			information_text;
+
     sf::Font font;
     font.loadFromFile("Fonts/Dosis-Light.otf");
-    text.setCharacterSize(14);
-    text.setFillColor(sf::Color::White);
-    text.setFont(font);
-    text.setPosition(20.f, window.getSize().y - 120.f);
-    text.setString("Technical Info"); // Will be over-written
+	technical_data.setFont(font);
+	game_title.setFont(font);
+	player_text.setFont(font);
+	information_text.setFont(font);
+
+    technical_data.setCharacterSize(20);
+    technical_data.setFillColor(sf::Color::White);
+    technical_data.setPosition(6.f, gridSizeF*10.f + 35.f);
+    technical_data.setString("Technical Info"); // Will be over-written
+
+	game_title.setCharacterSize(30);
+	game_title.setFillColor(sf::Color::White);
+	game_title.setString("Sidicers Battleship Game");
+	game_title.setPosition(6.f, gridSizeF*10.f);
+
+	player_text.setCharacterSize(30);
+	player_text.setFillColor(sf::Color::White);
+	player_text.setPosition(gridSizeF*10.f + 10.f, gridSizeF*10.f);
+	player_text.setString("Player area");
+
+	information_text.setCharacterSize(20);
+	information_text.setFillColor(sf::Color::White);
+	information_text.setPosition(gridSizeF*10.f + 10.f, gridSizeF*10.f + 35.f);
+	information_text.setString("Player is placing the ships");
 
     // Init camera (view)
     sf::View view;
@@ -52,7 +77,7 @@ int main()
 
 	sf::RectangleShape test_collision(sf::Vector2f(gridSizeF, gridSizeF));
 	test_collision.setFillColor(sf::Color::Red);
-	test_collision.setPosition(200.f, window.getSize().y - 120.f);
+	test_collision.setPosition(6.f, gridSizeF*10.f + 90.f);
 
     while(window.isOpen())
     {
@@ -80,7 +105,7 @@ int main()
         ss << "Mouse in Grid: " << mousePosGrid.x << " " << mousePosGrid.y << "\n"
             //<< "Player: " << player.getShip(0).getShipPosition().x << " " << player.getShip(0).getShipPosition().y << "\n"
 			<< "Current rotation: " << player.getShip(player.getPlacingShipId()).getShipRotation() << "\n";
-        text.setString(ss.str());
+		technical_data.setString(ss.str());
 
         // Events
         sf::Event event;
@@ -229,10 +254,14 @@ int main()
 		}
 
 		window.draw(test_collision);
+		
 
         window.setView(window.getDefaultView());
         // Render UI
-        window.draw(text);
+        window.draw(technical_data);
+		window.draw(game_title);
+		window.draw(player_text);
+		window.draw(information_text);
 
         window.display();
     }

@@ -1,4 +1,6 @@
 #include "Player.h"
+#include "Computer.h"
+#include "Game_engine.h"
 
 Player::Player() {
 	
@@ -8,6 +10,7 @@ Player::Player() {
 	this->currently_placing = true;
 	this->placing_ship_id = 0;
 	this->placing_rotation = 0;
+	this->hit_count = 0;
 	
 	// Initialize those 5 ships with their correct sizes
 	for (int i = 0; i < 5; i++) {
@@ -28,16 +31,21 @@ Ship & Player::getShip(const int index) {
 	return this->ships[index];
 }
 
-bool Player::isCurrentlyPlacing() {	
+bool Player::isCurrentlyPlacing() {
 	bool temp_placing = true;
-	for (int i = 0; i < 5; i++)
-		if (!ships[i].getShipPlaced())
+
+
+	for (int i = 0; i < 5; i++) {
+		if (!ships[i].getShipPlaced()) {
 			temp_placing = true;
+		}
 		else
 		{
 			temp_placing = false;
 		}
+	}	
 	this->currently_placing = temp_placing;
+
 	return this->currently_placing;
 }
 
@@ -149,12 +157,12 @@ bool Player::outOfBounds(sf::Vector2i position, int size, int rotation)
 
 			switch (rotation) {
 			case 0:
-				if (position.x + s >= 10 || position.y >= 10)
+				if (position.x + s >= 20 || position.y >= 10 || position.x + s <= 9)
 					return true;
 
 				break;
 			case 1:
-				if (position.x >= 10 || position.y + s >= 10)
+				if (position.x >= 20 || position.y + s >= 10 || position.x <= 9)
 					return true;
 
 				break;
@@ -162,4 +170,62 @@ bool Player::outOfBounds(sf::Vector2i position, int size, int rotation)
 		}
 	}
 	return false;
+}
+
+bool Player::receiveShot(sf::Vector2i position, Game_engine &game)
+{
+	printf("I received shots at %i:%i\n", position);
+	if (!outOfBounds(position, 0, 0)) {
+		bool temp_bool = false;
+		//printf("recieving shot at %i:%i\n", position);
+		if (canPlace(position, 0, 0)) {
+			game.miss(position);
+			temp_bool = false;
+			return false;
+		}
+		else
+		{
+			if (game.getHit().size() == 0) {
+				temp_bool = true;
+			}
+			else
+			{
+				for (size_t i = 0; i < game.getHit().size(); i++)
+				{
+					//printf("for %i - Does %i:%i equal %i:%i? Size: %i\n", i, position, game.getHit()[i], game.getHit().size());
+					if (position == game.getHit()[i]) {
+						temp_bool = false;
+						return false;
+					}
+					else
+					{
+						temp_bool = true;
+					}
+				}
+			}
+		}
+		if (!temp_bool) { return false; }
+		else {
+			printf("Player: You hit my ship!\n");
+			game.hit(position);
+			return temp_bool;
+		}
+	}
+	else { return false; }
+}
+
+void Player::shoot(Computer & computer, sf::Vector2i position, Game_engine &game)
+{
+	if (computer.receiveShot(position, game))
+		hitCount(true);
+}
+
+int Player::hitCount()
+{
+	return this->hit_count;
+}
+
+void Player::hitCount(bool)
+{
+	this->hit_count++;
 }

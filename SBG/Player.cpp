@@ -10,6 +10,7 @@ Player::Player() {
 	this->currently_placing = true;
 	this->placing_ship_id = 0;
 	this->placing_rotation = 0;
+	this->hit_count = 0;
 	
 	// Initialize those 5 ships with their correct sizes
 	for (int i = 0; i < 5; i++) {
@@ -173,41 +174,58 @@ bool Player::outOfBounds(sf::Vector2i position, int size, int rotation)
 
 bool Player::receiveShot(sf::Vector2i position, Game_engine &game)
 {
-	bool temp_bool = false;
-	//printf("recieving shot at %i:%i\n", position);
-	if (canPlace(position, 0, 0)) {
-		temp_bool = false;
-		return false;
-	}
-	else
-	{
-		if (game.getHit().size() == 0) {
-			temp_bool = true;
+	printf("I received shots at %i:%i\n", position);
+	if (!outOfBounds(position, 0, 0)) {
+		bool temp_bool = false;
+		//printf("recieving shot at %i:%i\n", position);
+		if (canPlace(position, 0, 0)) {
+			game.miss(position);
+			temp_bool = false;
+			return false;
 		}
 		else
 		{
-			for (size_t i = 0; i < game.getHit().size(); i++)
+			if (game.getHit().size() == 0) {
+				temp_bool = true;
+			}
+			else
 			{
-				//printf("for %i - Does %i:%i equal %i:%i? Size: %i\n", i, position, game.getHit()[i], game.getHit().size());
-				if (position == game.getHit()[i]) {
-					temp_bool = false;
-					return false;
-				}
-				else
+				for (size_t i = 0; i < game.getHit().size(); i++)
 				{
-					temp_bool = true;
+					//printf("for %i - Does %i:%i equal %i:%i? Size: %i\n", i, position, game.getHit()[i], game.getHit().size());
+					if (position == game.getHit()[i]) {
+						temp_bool = false;
+						return false;
+					}
+					else
+					{
+						temp_bool = true;
+					}
 				}
 			}
 		}
+		if (!temp_bool) { return false; }
+		else {
+			printf("Player: You hit my ship!\n");
+			game.hit(position);
+			return temp_bool;
+		}
 	}
-	if (!temp_bool) { return false; }
-	else {
-		printf("Player: You hit my ship!\n");
-		game.hit(position);
-	}
+	else { return false; }
 }
 
 void Player::shoot(Computer & computer, sf::Vector2i position, Game_engine &game)
 {
-	computer.receiveShot(position, game);
+	if (computer.receiveShot(position, game))
+		hitCount(true);
+}
+
+int Player::hitCount()
+{
+	return this->hit_count;
+}
+
+void Player::hitCount(bool)
+{
+	this->hit_count++;
 }

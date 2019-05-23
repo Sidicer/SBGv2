@@ -5,6 +5,10 @@ Computer::Computer()
 {
 	// Create a Dynamic array to store our ships
 	this->ships = new Ship[5];
+	this->last_hit = sf::Vector2i(-1,-1);
+	this->con_hits = 0;
+	this->last_dir = 0;
+	this->hit_count = 0;
 
 	// Initialize those 5 ships with their correct sizes
 	for (int i = 0; i < 5; i++) {
@@ -191,10 +195,99 @@ bool Computer::receiveShot(sf::Vector2i position, Game_engine &game)
 	}
 }
 
-void Computer::shoot(Player& player, Game_engine &game)
+bool Computer::shoot(Player& player, Game_engine &game)
 {
 	srand(time(NULL));
-	sf::Vector2i temp_position(rand() % 9 + 10, rand() % 10);
+	sf::Vector2i temp_position;
+	int temp_dir = 0;
+	if (this->last_hit.x < 0) {
+		temp_position.x = rand() % 9 + 10;
+		temp_position.y = rand() % 10;
+		
+	}
+	else if (con_hits == 0) {
+		temp_position.x = rand() % 9 + 10;
+		temp_position.y = rand() % 10;
+	}
+	else if (con_hits == 1) {
+		temp_dir = rand() % 3 + 1;
+		switch (temp_dir) {
+		case 1:
+			temp_position.x = last_hit.x;
+			temp_position.y = last_hit.y - 1;
+			break;
+		case 2:
+			temp_position.x = last_hit.x + 1;
+			temp_position.y = last_hit.y;
+			break;
+		case 3:
+			temp_position.x = last_hit.x;
+			temp_position.y = last_hit.y + 1;
+			break;
+		case 4:
+			temp_position.x = last_hit.x - 1;
+			temp_position.y = last_hit.y;
+			break;
+		}
+	}
+	else if (con_hits > 1) {
+		switch (this->last_dir) {
+		case 1:
+			temp_position.x = last_hit.x;
+			temp_position.y = last_hit.y - 1;
+			break;
+		case 2:
+			temp_position.x = last_hit.x + 1;
+			temp_position.y = last_hit.y;
+			break;
+		case 3:
+			temp_position.x = last_hit.x;
+			temp_position.y = last_hit.y + 1;
+			break;
+		case 4:
+			temp_position.x = last_hit.x - 1;
+			temp_position.y = last_hit.y;
+			break;
+		}
+	}
+
+	for (size_t i = 0; i < game.getMiss().size(); i++)
+	{
+		if (temp_position == game.getMiss()[i]) {
+			return false;
+		}
+	}
+
+	for (size_t i = 0; i < game.getHit().size(); i++)
+	{
+		if (temp_position == game.getHit()[i]) {
+			return false;
+		}
+	}
+
+	printf("last hit: %i:%i, con hits: %i, last dir: %i\n", this->last_hit, this->con_hits, this->last_dir);
 	//printf("Computer: I tried to shoot at %i:%i\n", temp_position);
-	player.receiveShot(sf::Vector2i(temp_position), game);
+	if (player.receiveShot(temp_position, game)) {
+		if (this->con_hits > 0 && this->con_hits < 3) this->last_dir = temp_dir;
+
+		this->last_hit = temp_position;
+		this->con_hits++;
+		hitCount(true);
+	}
+	else {
+		this->last_hit.x = -1;
+		this->con_hits = 0;
+	}
+
+	return true;
+}
+
+int Computer::hitCount()
+{
+	return this->hit_count;
+}
+
+void Computer::hitCount(bool)
+{
+	this->hit_count++;
 }

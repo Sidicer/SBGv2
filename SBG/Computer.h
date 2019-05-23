@@ -7,6 +7,10 @@ class Computer : public Ship
 {
 private:
 	Ship* ships = NULL;
+	sf::Vector2i last_hit;
+	int last_dir;
+	int con_hits;
+	int hit_count;
 public:
 	Computer();
 	~Computer();
@@ -18,6 +22,8 @@ public:
 	bool outOfBounds(sf::Vector2i position, int size, int rotation);
 
 	bool receiveShot(sf::Vector2i position, Game_engine &game);
-	void shoot(Player &player, Game_engine &game);
+	bool shoot(Player &player, Game_engine &game);
+	int hitCount();
+	void hitCount(bool);
 };
 

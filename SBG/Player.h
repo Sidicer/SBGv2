@@ -8,8 +8,9 @@ class Player : public Ship {
 private:
 	Ship* ships = NULL;
 	bool currently_placing;
-	int placing_ship_id,
-		placing_rotation;
+	int placing_ship_id;
+	int placing_rotation;
+	int hit_count;
 
 public:
 	Player();
@@ -30,4 +31,6 @@ public:
 
 	bool receiveShot(sf::Vector2i position, Game_engine &game);
 	void shoot(Computer& computer, sf::Vector2i position, Game_engine &game);
+	int hitCount();
+	void hitCount(bool);
 };
